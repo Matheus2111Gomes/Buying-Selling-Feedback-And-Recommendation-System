@@ -4,10 +4,11 @@ provider:
   name: aws
   runtime: nodejs16.x
   region: us-east-1
+  stage: ${opt:stage, 'dev'}
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
-    S3_BUCKET: ${self:service}-${self:provider.stage}-files
-    DYNAMODB_TABLE: ${self:service}-${self:provider.stage}-feedback
+    S3_BUCKET: ${self:service}-${self:provider.stage}
+    DYNAMODB_TABLE: ${self:service}-${self:provider.stage}
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -30,45 +31,80 @@ provider:
         - "sqs:DeleteMessage"
       Resource: "arn:aws:sqs:${self:provider.region}:*:QueueName"
 
-functions:
-  createFeedback:
-    handler: src/feedback/createFeedback.handler
-    events:
-      - http:
-          path: feedback
-          method: post
+plugins:
+  - serverless-esbuild
+build:
+  esbuild: false
+custom:
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    exclude:
+      - '@nestjs/microservices'
+      - '@nestjs/websockets'
+      - 'class-transformer'
+      - 'class-validator'
+    target: 'node16'
+    define:
+      'require.resolve': undefined
+    platform: 'node'
+    concurrency: 10
 
-  listFeedback:
-    handler: src/feedback/listFeedback.handler
-    events:
-      - http:
-          path: feedback
-          method: get
+functions:
+#  createFeedback:
+#    handler: src/feedback/createFeedback.handler
+#    events:
+#      - http:
+#          path: feedback
+#          method: post
+#          cors: true
+#
+#  listFeedback:
+#    handler: src/feedback/listFeedback.handler
+#    events:
+#      - http:
+#          path: feedback
+#          method: get
+#          cors: true
 
   createProduct:
-    handler: src/product/createProduct.handler
+    handler: src/product/handler/createProduct.handler
+    environment:
+      DYNAMODB_TABLE: ${self:provider.environment.DYNAMODB_TABLE}
     events:
       - http:
           path: product
           method: post
+          cors: true
+    timeout: 20      
+
 
   listProducts:
-    handler: src/product/listProducts.handler
+    handler: src/product/handler/listProducts.handler
+    environment:
+      DYNAMODB_TABLE: ${self:provider.environment.DYNAMODB_TABLE}
     events:
       - http:
           path: product
           method: get
+          cors: true
+    timeout: 20     
 
   getProduct:
-    handler: src/product/getProduct.handler
+    handler: src/product/handler/getProduct.handler
+    environment:
+      DYNAMODB_TABLE: ${self:provider.environment.DYNAMODB_TABLE}
     events:
       - http:
           path: product/{id}
           method: get
+          cors: true
+    timeout: 20      
 
 resources:
   Resources:
-     ProductTable:
+    ProductTable:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
@@ -79,19 +115,3 @@ resources:
           - AttributeName: id
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
-    FeedbackTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:provider.environment.DYNAMODB_TABLE}
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
-    S3Bucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName: ${self:provider.environment.S3_BUCKET}
-    
