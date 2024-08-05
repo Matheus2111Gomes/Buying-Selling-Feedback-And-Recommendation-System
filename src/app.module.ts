@@ -4,9 +4,17 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { ProductModule } from './product/product.module';
+import { ConfigModule } from '@nestjs/config';
+
 
 @Module({
-  imports: [AuthModule, FeedbackModule, ProductModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    AuthModule, 
+    FeedbackModule, 
+    ProductModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -3,27 +3,48 @@ import { v4 as uuidv4 } from 'uuid';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductResponseDto } from './dto/product-response.dto';
 import { Product } from './product.entity';
+import { dynamoDB } from 'src/config/aws.config';
+
 
 @Injectable()
 export class ProductService{
-    private products: Product[] = []
+    private readonly tableName = process.env.DYNAMODB_TABLE;
 
-    create(createProductDto: CreateProductDto): ProductResponseDto{
+
+    async create(createProductDto: CreateProductDto): Promise<ProductResponseDto>{
         const product: Product ={
             id: uuidv4(),
             ...createProductDto,
             createdAt: new Date()
         }
-        this.products.push(product);
+
+        const params = {
+            TableName: this.tableName,
+            Item: product,
+        }
+
+        await dynamoDB.put(params).promise();
+
         return product;
     }
 
-    findAll(): ProductResponseDto[]{
-        return this.products;
+    async findAll(): Promise<ProductResponseDto[]>{
+
+        const params = {
+            TableName: this.tableName,
+        }
+        const result = await dynamoDB.scan(params).promise();
+        return result.Items as ProductResponseDto[];
     }
 
-    findOne(id:string): ProductResponseDto{
-        return this.products.find(product => product.id === id);
-    }
+    async findOne(id: string): Promise<ProductResponseDto> {
+        const params = {
+          TableName: this.tableName,
+          Key: { id },
+        };
+    
+        const result = await dynamoDB.get(params).promise();
+        return result.Item as ProductResponseDto;
+      }
 
 }

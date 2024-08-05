@@ -45,8 +45,40 @@ functions:
           path: feedback
           method: get
 
+  createProduct:
+    handler: src/product/createProduct.handler
+    events:
+      - http:
+          path: product
+          method: post
+
+  listProducts:
+    handler: src/product/listProducts.handler
+    events:
+      - http:
+          path: product
+          method: get
+
+  getProduct:
+    handler: src/product/getProduct.handler
+    events:
+      - http:
+          path: product/{id}
+          method: get
+
 resources:
   Resources:
+     ProductTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
     FeedbackTable:
       Type: AWS::DynamoDB::Table
       Properties:
