@@ -10,7 +10,11 @@ const init = async () => {
   productService = app.get(ProductService);
 };
 
-export const handler = async (event: APIGatewayEvent, context: Context, callback: Callback) => {
+export const handler = async (
+  event: APIGatewayEvent,
+  context: Context,
+  callback: Callback,
+) => {
   if (!productService) {
     await init();
   }
