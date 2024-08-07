@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductResponseDto } from './dto/product-response.dto';
@@ -7,6 +7,26 @@ import { dynamoDB } from 'src/config/aws.config';
 @Injectable()
 export class ProductService {
   private readonly tableName = process.env.DYNAMODB_TABLE;
+
+  private async getProductsInDynamo(atrb: string) {
+    const params = {
+      TableName: this.tableName,
+      KeyConditionExpression: 'PK = :pkPrefix AND begins_with(SK, :skPrefix)',
+      ExpressionAttributeValues: {
+        ':pkPrefix': 'PRODUCT#',
+        ':skPrefix': atrb,
+      },
+    };
+
+    try {
+      const result = await dynamoDB.query(params).promise();
+
+      return result.Items as ProductResponseDto[];
+    } catch (error) {
+      console.error('Error fetching products from DynamoDB:', error);
+      throw new InternalServerErrorException('Could not fetch products');
+    }
+  }
 
   async create(createProductDto: CreateProductDto): Promise<any> {
     const { name, description } = createProductDto;
@@ -18,14 +38,17 @@ export class ProductService {
         }),
       };
     }
-
+    const cAt = new Date().toISOString();
+    const productId = uuidv4();
     const params = {
       TableName: process.env.DYNAMODB_TABLE,
       Item: {
-        id: uuidv4(),
+        PK: `PRODUCT#`,
+        SK: `PRODUCT#${productId}`,
+        id: productId,
         name,
         description,
-        createdAt: new Date().toISOString(),
+        createdAt: cAt,
       },
     };
 
@@ -45,27 +68,11 @@ export class ProductService {
   }
 
   async findAll(): Promise<ProductResponseDto[]> {
-    const params = {
-      TableName: this.tableName,
-    };
-    try {
-      const result = await dynamoDB.scan(params).promise();
-      console.log(result);
-
-      return result.Items as ProductResponseDto[];
-    } catch (error) {
-      console.error('Error scanning DynamoDB:', error);
-      throw new Error(`Error fetching products: ${error.message}`);
-    }
+    return this.getProductsInDynamo('PRODUCT#');
   }
 
   async findOne(id: string): Promise<ProductResponseDto> {
-    const params = {
-      TableName: this.tableName,
-      Key: { id },
-    };
-
-    const result = await dynamoDB.get(params).promise();
-    return result.Item as ProductResponseDto;
+    let product = await this.getProductsInDynamo('PRODUCT#' + id);
+    return product[0];
   }
 }

@@ -6,30 +6,32 @@ provider:
   region: us-east-1
   stage: ${opt:stage, 'dev'}
   environment:
-    AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
     S3_BUCKET: ${self:service}-${self:provider.stage}
     DYNAMODB_TABLE: ${self:service}-${self:provider.stage}
   iamRoleStatements:
-    - Effect: "Allow"
+    - Effect: 'Allow'
       Action:
-        - "s3:PutObject"
-        - "s3:GetObject"
-        - "s3:DeleteObject"
-      Resource: "arn:aws:s3:::${self:provider.environment.S3_BUCKET}/*"
-    - Effect: "Allow"
+        - 's3:PutObject'
+        - 's3:GetObject'
+        - 's3:DeleteObject'
+      Resource: 'arn:aws:s3:::${self:provider.environment.S3_BUCKET}/*'
+    - Effect: 'Allow'
       Action:
-        - "dynamodb:PutItem"
-        - "dynamodb:Scan"
-        - "dynamodb:Query"
-        - "dynamodb:GetItem"
-        - "dynamodb:UpdateItem"
-      Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
-    - Effect: "Allow"
+        - 'dynamodb:PutItem'
+        - 'dynamodb:Scan'
+        - 'dynamodb:Query'
+        - 'dynamodb:GetItem'
+        - 'dynamodb:UpdateItem'
+      Resource:
+        - 'arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}'
+        - 'arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}/index/GSI-Product'
+    - Effect: 'Allow'
       Action:
-        - "sqs:SendMessage"
-        - "sqs:ReceiveMessage"
-        - "sqs:DeleteMessage"
-      Resource: "arn:aws:sqs:${self:provider.region}:*:QueueName"
+        - 'sqs:SendMessage'
+        - 'sqs:ReceiveMessage'
+        - 'sqs:DeleteMessage'
+      Resource: 'arn:aws:sqs:${self:provider.region}:*:QueueName'
 
 plugins:
   - serverless-esbuild
@@ -52,21 +54,21 @@ custom:
     concurrency: 10
 
 functions:
-#  createFeedback:
-#    handler: src/feedback/createFeedback.handler
-#    events:
-#      - http:
-#          path: feedback
-#          method: post
-#          cors: true
-#
-#  listFeedback:
-#    handler: src/feedback/listFeedback.handler
-#    events:
-#      - http:
-#          path: feedback
-#          method: get
-#          cors: true
+  #  createFeedback:
+  #    handler: src/feedback/createFeedback.handler
+  #    events:
+  #      - http:
+  #          path: feedback
+  #          method: post
+  #          cors: true
+  #
+  #  listFeedback:
+  #    handler: src/feedback/listFeedback.handler
+  #    events:
+  #      - http:
+  #          path: feedback
+  #          method: get
+  #          cors: true
 
   createProduct:
     handler: src/product/handler/createProduct.handler
@@ -77,8 +79,7 @@ functions:
           path: product
           method: post
           cors: true
-    timeout: 20      
-
+    timeout: 20
 
   listProducts:
     handler: src/product/handler/listProducts.handler
@@ -89,7 +90,7 @@ functions:
           path: product
           method: get
           cors: true
-    timeout: 20     
+    timeout: 20
 
   getProduct:
     handler: src/product/handler/getProduct.handler
@@ -100,7 +101,7 @@ functions:
           path: product/{id}
           method: get
           cors: true
-    timeout: 20      
+    timeout: 20
 
 resources:
   Resources:
@@ -109,9 +110,15 @@ resources:
       Properties:
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
         AttributeDefinitions:
-          - AttributeName: id
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: S
+          - AttributeName: GSIProduct_PK
             AttributeType: S
         KeySchema:
-          - AttributeName: id
+          - AttributeName: PK
             KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE
         BillingMode: PAY_PER_REQUEST

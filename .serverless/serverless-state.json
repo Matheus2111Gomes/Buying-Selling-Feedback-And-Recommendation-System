@@ -17,11 +17,7 @@
       "iamRoleStatements": [
         {
           "Effect": "Allow",
-          "Action": [
-            "s3:PutObject",
-            "s3:GetObject",
-            "s3:DeleteObject"
-          ],
+          "Action": ["s3:PutObject", "s3:GetObject", "s3:DeleteObject"],
           "Resource": "arn:aws:s3:::recommendation-feedback-dev/*"
         },
         {
@@ -33,7 +29,9 @@
             "dynamodb:GetItem",
             "dynamodb:UpdateItem"
           ],
-          "Resource": "arn:aws:dynamodb:us-east-1:*:table/recommendation-feedback-dev"
+          "Resource": [
+            "arn:aws:dynamodb:us-east-1:*:table/recommendation-feedback-dev"
+          ]
         },
         {
           "Effect": "Allow",
@@ -146,13 +144,9 @@
                   {
                     "Effect": "Allow",
                     "Principal": {
-                      "Service": [
-                        "lambda.amazonaws.com"
-                      ]
+                      "Service": ["lambda.amazonaws.com"]
                     },
-                    "Action": [
-                      "sts:AssumeRole"
-                    ]
+                    "Action": ["sts:AssumeRole"]
                   }
                 ]
               },
@@ -161,11 +155,7 @@
                   "PolicyName": {
                     "Fn::Join": [
                       "-",
-                      [
-                        "recommendation-feedback",
-                        "dev",
-                        "lambda"
-                      ]
+                      ["recommendation-feedback", "dev", "lambda"]
                     ]
                   },
                   "PolicyDocument": {
@@ -186,9 +176,7 @@
                       },
                       {
                         "Effect": "Allow",
-                        "Action": [
-                          "logs:PutLogEvents"
-                        ],
+                        "Action": ["logs:PutLogEvents"],
                         "Resource": [
                           {
                             "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/recommendation-feedback-dev*:*:*"
@@ -231,7 +219,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/recommendation-feedback/dev/1722898758855-2024-08-05T22:59:18.855Z/recommendation-feedback.zip"
+                "S3Key": "serverless/recommendation-feedback/dev/1723037008862-2024-08-07T13:23:28.862Z/recommendation-feedback.zip"
               },
               "Handler": "src/product/handler/createProduct.handler",
               "Runtime": "nodejs16.x",
@@ -246,15 +234,10 @@
                 }
               },
               "Role": {
-                "Fn::GetAtt": [
-                  "IamRoleLambdaExecution",
-                  "Arn"
-                ]
+                "Fn::GetAtt": ["IamRoleLambdaExecution", "Arn"]
               }
             },
-            "DependsOn": [
-              "CreateProductLogGroup"
-            ]
+            "DependsOn": ["CreateProductLogGroup"]
           },
           "ListProductsLambdaFunction": {
             "Type": "AWS::Lambda::Function",
@@ -263,7 +246,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/recommendation-feedback/dev/1722898758855-2024-08-05T22:59:18.855Z/recommendation-feedback.zip"
+                "S3Key": "serverless/recommendation-feedback/dev/1723037008862-2024-08-07T13:23:28.862Z/recommendation-feedback.zip"
               },
               "Handler": "src/product/handler/listProducts.handler",
               "Runtime": "nodejs16.x",
@@ -278,15 +261,10 @@
                 }
               },
               "Role": {
-                "Fn::GetAtt": [
-                  "IamRoleLambdaExecution",
-                  "Arn"
-                ]
+                "Fn::GetAtt": ["IamRoleLambdaExecution", "Arn"]
               }
             },
-            "DependsOn": [
-              "ListProductsLogGroup"
-            ]
+            "DependsOn": ["ListProductsLogGroup"]
           },
           "GetProductLambdaFunction": {
             "Type": "AWS::Lambda::Function",
@@ -295,7 +273,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/recommendation-feedback/dev/1722898758855-2024-08-05T22:59:18.855Z/recommendation-feedback.zip"
+                "S3Key": "serverless/recommendation-feedback/dev/1723037008862-2024-08-07T13:23:28.862Z/recommendation-feedback.zip"
               },
               "Handler": "src/product/handler/getProduct.handler",
               "Runtime": "nodejs16.x",
@@ -310,44 +288,39 @@
                 }
               },
               "Role": {
-                "Fn::GetAtt": [
-                  "IamRoleLambdaExecution",
-                  "Arn"
-                ]
+                "Fn::GetAtt": ["IamRoleLambdaExecution", "Arn"]
               }
             },
-            "DependsOn": [
-              "GetProductLogGroup"
-            ]
+            "DependsOn": ["GetProductLogGroup"]
           },
-          "CreateProductLambdaVersionULJe0lOS705cJGuhf5KzhI9WEUZFBmupwUqVK6G9Msk": {
+          "CreateProductLambdaVersiontUAIHLxvo1gj6H7FWOYDMMMZYY8giSh5qCKRdJLMyw": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreateProductLambdaFunction"
               },
-              "CodeSha256": "74JQY0vScVY10YaZwMk0KjYg5gPszRW6q+0gHoi9hGo="
+              "CodeSha256": "F1hBGfl1OtjivIK8tdLaBfJRyeg6kX7LmMIeEOxdnFI="
             }
           },
-          "ListProductsLambdaVersiondFjAZVQWoYx06Zw3DKybm7BS3hs3W83DCJjKKIuemU": {
+          "ListProductsLambdaVersionQOvQrCYazlNQIb55ugHU1DLXAeQdSMOh212L6evNY8": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ListProductsLambdaFunction"
               },
-              "CodeSha256": "74JQY0vScVY10YaZwMk0KjYg5gPszRW6q+0gHoi9hGo="
+              "CodeSha256": "F1hBGfl1OtjivIK8tdLaBfJRyeg6kX7LmMIeEOxdnFI="
             }
           },
-          "GetProductLambdaVersiongVRtVPz2Pl6iG4UwAA6y2DhBZRRIbtQL1zKrEgM": {
+          "GetProductLambdaVersionorgY8PLzSKTVh84iwR49tlKuGo1meZVbi6VaDscZI": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetProductLambdaFunction"
               },
-              "CodeSha256": "74JQY0vScVY10YaZwMk0KjYg5gPszRW6q+0gHoi9hGo="
+              "CodeSha256": "F1hBGfl1OtjivIK8tdLaBfJRyeg6kX7LmMIeEOxdnFI="
             }
           },
           "ApiGatewayRestApi": {
@@ -355,9 +328,7 @@
             "Properties": {
               "Name": "dev-recommendation-feedback",
               "EndpointConfiguration": {
-                "Types": [
-                  "EDGE"
-                ]
+                "Types": ["EDGE"]
               },
               "Policy": ""
             }
@@ -366,10 +337,7 @@
             "Type": "AWS::ApiGateway::Resource",
             "Properties": {
               "ParentId": {
-                "Fn::GetAtt": [
-                  "ApiGatewayRestApi",
-                  "RootResourceId"
-                ]
+                "Fn::GetAtt": ["ApiGatewayRestApi", "RootResourceId"]
               },
               "PathPart": "product",
               "RestApiId": {
@@ -509,10 +477,7 @@
                       },
                       ":lambda:path/2015-03-31/functions/",
                       {
-                        "Fn::GetAtt": [
-                          "CreateProductLambdaFunction",
-                          "Arn"
-                        ]
+                        "Fn::GetAtt": ["CreateProductLambdaFunction", "Arn"]
                       },
                       "/invocations"
                     ]
@@ -521,9 +486,7 @@
               },
               "MethodResponses": []
             },
-            "DependsOn": [
-              "CreateProductLambdaPermissionApiGateway"
-            ]
+            "DependsOn": ["CreateProductLambdaPermissionApiGateway"]
           },
           "ApiGatewayMethodProductGet": {
             "Type": "AWS::ApiGateway::Method",
@@ -555,10 +518,7 @@
                       },
                       ":lambda:path/2015-03-31/functions/",
                       {
-                        "Fn::GetAtt": [
-                          "ListProductsLambdaFunction",
-                          "Arn"
-                        ]
+                        "Fn::GetAtt": ["ListProductsLambdaFunction", "Arn"]
                       },
                       "/invocations"
                     ]
@@ -567,9 +527,7 @@
               },
               "MethodResponses": []
             },
-            "DependsOn": [
-              "ListProductsLambdaPermissionApiGateway"
-            ]
+            "DependsOn": ["ListProductsLambdaPermissionApiGateway"]
           },
           "ApiGatewayMethodProductIdVarGet": {
             "Type": "AWS::ApiGateway::Method",
@@ -601,10 +559,7 @@
                       },
                       ":lambda:path/2015-03-31/functions/",
                       {
-                        "Fn::GetAtt": [
-                          "GetProductLambdaFunction",
-                          "Arn"
-                        ]
+                        "Fn::GetAtt": ["GetProductLambdaFunction", "Arn"]
                       },
                       "/invocations"
                     ]
@@ -613,11 +568,9 @@
               },
               "MethodResponses": []
             },
-            "DependsOn": [
-              "GetProductLambdaPermissionApiGateway"
-            ]
+            "DependsOn": ["GetProductLambdaPermissionApiGateway"]
           },
-          "ApiGatewayDeployment1722898752548": {
+          "ApiGatewayDeployment1723037002841": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -637,10 +590,7 @@
             "Type": "AWS::Lambda::Permission",
             "Properties": {
               "FunctionName": {
-                "Fn::GetAtt": [
-                  "CreateProductLambdaFunction",
-                  "Arn"
-                ]
+                "Fn::GetAtt": ["CreateProductLambdaFunction", "Arn"]
               },
               "Action": "lambda:InvokeFunction",
               "Principal": "apigateway.amazonaws.com",
@@ -674,10 +624,7 @@
             "Type": "AWS::Lambda::Permission",
             "Properties": {
               "FunctionName": {
-                "Fn::GetAtt": [
-                  "ListProductsLambdaFunction",
-                  "Arn"
-                ]
+                "Fn::GetAtt": ["ListProductsLambdaFunction", "Arn"]
               },
               "Action": "lambda:InvokeFunction",
               "Principal": "apigateway.amazonaws.com",
@@ -711,10 +658,7 @@
             "Type": "AWS::Lambda::Permission",
             "Properties": {
               "FunctionName": {
-                "Fn::GetAtt": [
-                  "GetProductLambdaFunction",
-                  "Arn"
-                ]
+                "Fn::GetAtt": ["GetProductLambdaFunction", "Arn"]
               },
               "Action": "lambda:InvokeFunction",
               "Principal": "apigateway.amazonaws.com",
@@ -750,14 +694,44 @@
               "TableName": "recommendation-feedback-dev",
               "AttributeDefinitions": [
                 {
-                  "AttributeName": "id",
+                  "AttributeName": "PK",
+                  "AttributeType": "S"
+                },
+                {
+                  "AttributeName": "SK",
+                  "AttributeType": "S"
+                },
+                {
+                  "AttributeName": "GSIProduct_PK",
                   "AttributeType": "S"
                 }
               ],
               "KeySchema": [
                 {
-                  "AttributeName": "id",
+                  "AttributeName": "PK",
                   "KeyType": "HASH"
+                },
+                {
+                  "AttributeName": "SK",
+                  "KeyType": "RANGE"
+                }
+              ],
+              "GlobalSecondaryIndexes": [
+                {
+                  "IndexName": "GSI-Product",
+                  "KeySchema": [
+                    {
+                      "AttributeName": "GSIProduct_PK",
+                      "KeyType": "HASH"
+                    },
+                    {
+                      "AttributeName": "SK",
+                      "KeyType": "RANGE"
+                    }
+                  ],
+                  "Projection": {
+                    "ProjectionType": "ALL"
+                  }
                 }
               ],
               "BillingMode": "PAY_PER_REQUEST"
@@ -776,7 +750,7 @@
           "CreateProductLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateProductLambdaVersionULJe0lOS705cJGuhf5KzhI9WEUZFBmupwUqVK6G9Msk"
+              "Ref": "CreateProductLambdaVersiontUAIHLxvo1gj6H7FWOYDMMMZYY8giSh5qCKRdJLMyw"
             },
             "Export": {
               "Name": "sls-recommendation-feedback-dev-CreateProductLambdaFunctionQualifiedArn"
@@ -785,7 +759,7 @@
           "ListProductsLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ListProductsLambdaVersiondFjAZVQWoYx06Zw3DKybm7BS3hs3W83DCJjKKIuemU"
+              "Ref": "ListProductsLambdaVersionQOvQrCYazlNQIb55ugHU1DLXAeQdSMOh212L6evNY8"
             },
             "Export": {
               "Name": "sls-recommendation-feedback-dev-ListProductsLambdaFunctionQualifiedArn"
@@ -794,7 +768,7 @@
           "GetProductLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetProductLambdaVersiongVRtVPz2Pl6iG4UwAA6y2DhBZRRIbtQL1zKrEgM"
+              "Ref": "GetProductLambdaVersionorgY8PLzSKTVh84iwR49tlKuGo1meZVbi6VaDscZI"
             },
             "Export": {
               "Name": "sls-recommendation-feedback-dev-GetProductLambdaFunctionQualifiedArn"
@@ -931,9 +905,7 @@
         "concurrency": 10
       }
     },
-    "plugins": [
-      "serverless-esbuild"
-    ],
+    "plugins": ["serverless-esbuild"],
     "pluginsData": {},
     "functions": {
       "createProduct": {
@@ -948,10 +920,7 @@
               "method": "post",
               "cors": {
                 "origin": "*",
-                "methods": [
-                  "OPTIONS",
-                  "POST"
-                ],
+                "methods": ["OPTIONS", "POST"],
                 "headers": [
                   "Content-Type",
                   "X-Amz-Date",
@@ -973,7 +942,7 @@
         "memory": 1024,
         "runtime": "nodejs16.x",
         "vpc": {},
-        "versionLogicalId": "CreateProductLambdaVersionULJe0lOS705cJGuhf5KzhI9WEUZFBmupwUqVK6G9Msk"
+        "versionLogicalId": "CreateProductLambdaVersiontUAIHLxvo1gj6H7FWOYDMMMZYY8giSh5qCKRdJLMyw"
       },
       "listProducts": {
         "handler": "src/product/handler/listProducts.handler",
@@ -987,10 +956,7 @@
               "method": "get",
               "cors": {
                 "origin": "*",
-                "methods": [
-                  "OPTIONS",
-                  "GET"
-                ],
+                "methods": ["OPTIONS", "GET"],
                 "headers": [
                   "Content-Type",
                   "X-Amz-Date",
@@ -1012,7 +978,7 @@
         "memory": 1024,
         "runtime": "nodejs16.x",
         "vpc": {},
-        "versionLogicalId": "ListProductsLambdaVersiondFjAZVQWoYx06Zw3DKybm7BS3hs3W83DCJjKKIuemU"
+        "versionLogicalId": "ListProductsLambdaVersionQOvQrCYazlNQIb55ugHU1DLXAeQdSMOh212L6evNY8"
       },
       "getProduct": {
         "handler": "src/product/handler/getProduct.handler",
@@ -1026,10 +992,7 @@
               "method": "get",
               "cors": {
                 "origin": "*",
-                "methods": [
-                  "OPTIONS",
-                  "GET"
-                ],
+                "methods": ["OPTIONS", "GET"],
                 "headers": [
                   "Content-Type",
                   "X-Amz-Date",
@@ -1051,7 +1014,7 @@
         "memory": 1024,
         "runtime": "nodejs16.x",
         "vpc": {},
-        "versionLogicalId": "GetProductLambdaVersiongVRtVPz2Pl6iG4UwAA6y2DhBZRRIbtQL1zKrEgM"
+        "versionLogicalId": "GetProductLambdaVersionorgY8PLzSKTVh84iwR49tlKuGo1meZVbi6VaDscZI"
       }
     },
     "resources": {
@@ -1062,14 +1025,44 @@
             "TableName": "recommendation-feedback-dev",
             "AttributeDefinitions": [
               {
-                "AttributeName": "id",
+                "AttributeName": "PK",
+                "AttributeType": "S"
+              },
+              {
+                "AttributeName": "SK",
+                "AttributeType": "S"
+              },
+              {
+                "AttributeName": "GSIProduct_PK",
                 "AttributeType": "S"
               }
             ],
             "KeySchema": [
               {
-                "AttributeName": "id",
+                "AttributeName": "PK",
                 "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "SK",
+                "KeyType": "RANGE"
+              }
+            ],
+            "GlobalSecondaryIndexes": [
+              {
+                "IndexName": "GSI-Product",
+                "KeySchema": [
+                  {
+                    "AttributeName": "GSIProduct_PK",
+                    "KeyType": "HASH"
+                  },
+                  {
+                    "AttributeName": "SK",
+                    "KeyType": "RANGE"
+                  }
+                ],
+                "Projection": {
+                  "ProjectionType": "ALL"
+                }
               }
             ],
             "BillingMode": "PAY_PER_REQUEST"
@@ -1109,7 +1102,7 @@
     "layers": {}
   },
   "package": {
-    "artifactDirectoryName": "serverless/recommendation-feedback/dev/1722898758855-2024-08-05T22:59:18.855Z",
+    "artifactDirectoryName": "serverless/recommendation-feedback/dev/1723037008862-2024-08-07T13:23:28.862Z",
     "artifact": "recommendation-feedback.zip"
   }
 }
