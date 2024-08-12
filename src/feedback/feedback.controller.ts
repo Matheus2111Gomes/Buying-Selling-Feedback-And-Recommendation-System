@@ -1,12 +1,14 @@
-import { Body, Param, Get, Post, Controller } from '@nestjs/common';
+import { Body, Param, Get, Post, Controller, UseGuards } from '@nestjs/common';
 import { FeedbackService } from './feedback.service';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { FeedbackResponseDto } from './dto/feedback-response.dto';
+//import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('product')
 export class ProductController {
   constructor(private readonly feedbackService: FeedbackService) {}
 
+  //@UseGuards(JwtAuthGuard)
   @Post()
   async create(
     @Body() createFeedbackDto: CreateFeedbackDto,

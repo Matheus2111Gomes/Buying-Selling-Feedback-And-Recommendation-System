@@ -1,78 +1,38 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
-import { ProductResponseDto } from './dto/product-response.dto';
-import { dynamoDB } from 'src/config/aws.config';
+import { Product } from './entities/product.entity';
 
 @Injectable()
 export class ProductService {
-  private readonly tableName = process.env.DYNAMODB_TABLE;
+  constructor(
+    @InjectRepository(Product)
+    private productRepository: Repository<Product>,
+  ) {}
 
-  private async getProductsInDynamo(atrb: string) {
-    const params = {
-      TableName: this.tableName,
-      KeyConditionExpression: 'PK = :pkPrefix AND begins_with(SK, :skPrefix)',
-      ExpressionAttributeValues: {
-        ':pkPrefix': 'PRODUCT#',
-        ':skPrefix': atrb,
-      },
-    };
-
-    try {
-      const result = await dynamoDB.query(params).promise();
-
-      return result.Items as ProductResponseDto[];
-    } catch (error) {
-      console.error('Error fetching products from DynamoDB:', error);
-      throw new InternalServerErrorException('Could not fetch products');
-    }
+  async create(createProductDto: CreateProductDto): Promise<Product> {
+    const timeElapsed = Date.now();
+    createProductDto.createdAt = new Date(timeElapsed);
+    console.log(createProductDto);
+    const product = this.productRepository.create(createProductDto);
+    return this.productRepository.save(product);
   }
 
-  async create(createProductDto: CreateProductDto): Promise<any> {
-    const { name, description } = createProductDto;
-    if (!name || !description) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({
-          message: 'Missing required fields: name and description',
-        }),
-      };
-    }
-    const cAt = new Date().toISOString();
-    const productId = uuidv4();
-    const params = {
-      TableName: process.env.DYNAMODB_TABLE,
-      Item: {
-        PK: `PRODUCT#`,
-        SK: `PRODUCT#${productId}`,
-        id: productId,
-        name,
-        description,
-        createdAt: cAt,
-      },
-    };
-
-    try {
-      await dynamoDB.put(params).promise();
-      return {
-        statusCode: 201,
-        body: JSON.stringify(params.Item),
-      };
-    } catch (error) {
-      console.error('Error saving product to DynamoDB:', error);
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ message: 'Internal Server Error' }),
-      };
-    }
+  async findAll(): Promise<Product[]> {
+    return this.productRepository.find();
   }
 
-  async findAll(): Promise<ProductResponseDto[]> {
-    return this.getProductsInDynamo('PRODUCT#');
+  async findOne(id: string): Promise<Product> {
+    const product = await this.productRepository.findOne({ where: { id } });
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${id} not found`);
+    }
+    return product;
   }
 
-  async findOne(id: string): Promise<ProductResponseDto> {
-    let product = await this.getProductsInDynamo('PRODUCT#' + id);
-    return product[0];
+  async remove(id: string): Promise<void> {
+    const product = await this.findOne(id);
+    await this.productRepository.remove(product);
   }
 }

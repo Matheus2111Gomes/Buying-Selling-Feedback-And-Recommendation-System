@@ -35,6 +35,13 @@ provider:
 
 plugins:
   - serverless-esbuild
+
+package:
+  individually: true
+  exclude:
+    - node_modules/**
+    - .serverless/**
+    - .git/**
 build:
   esbuild: false
 custom:
@@ -69,6 +76,28 @@ functions:
   #          path: feedback
   #          method: get
   #          cors: true
+
+  createUser:
+    handler: src/user/handler/createUser.handler
+    environment:
+      DYNAMODB_TABLE: ${self:provider.environment.DYNAMODB_TABLE}
+    events:
+      - http:
+          path: user
+          method: post
+          cors: true
+    timeout: 20
+
+  login:
+    handler: src/auth/handler/login.handler
+    environment:
+      DYNAMODB_TABLE: ${self:provider.environment.DYNAMODB_TABLE}
+    events:
+      - http:
+          path: auth/login
+          method: post
+          cors: true
+    timeout: 20
 
   createProduct:
     handler: src/product/handler/createProduct.handler
@@ -113,8 +142,6 @@ resources:
           - AttributeName: PK
             AttributeType: S
           - AttributeName: SK
-            AttributeType: S
-          - AttributeName: GSIProduct_PK
             AttributeType: S
         KeySchema:
           - AttributeName: PK

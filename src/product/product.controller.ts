@@ -1,7 +1,8 @@
-import { Body, Param, Get, Post, Controller } from '@nestjs/common';
+import { Body, Param, Get, Post, Controller, UseGuards } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ProductResponseDto } from './dto/product-response.dto';
 import { CreateProductDto } from './dto/create-product.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('product')
 export class ProductController {
@@ -14,6 +15,7 @@ export class ProductController {
     return this.productService.create(createProductDto);
   }
 
+  //@UseGuards(JwtAuthGuard)
   @Get()
   async findAll(): Promise<ProductResponseDto[]> {
     return this.productService.findAll();

@@ -42,8 +42,8 @@ export class FeedbackService {
     const params = {
       TableName: process.env.DYNAMODB_TABLE,
       Item: {
-        PK: `FEEDBACK#${id}`,
-        SK: `#METADATA#${cAt}`,
+        PK: `FEEDBACK#`,
+        SK: `FEEDBACK#${id}`,
         id: id,
         userId,
         productId,
