@@ -8,7 +8,6 @@ export class AuthController {
   constructor(private authService: AuthService) {}
   @Post('login')
   async login(@Request() req) {
-    console.log('Olar');
-    return this.authService.login(req.user);
+    return this.authService.login(req.body);
   }
 }

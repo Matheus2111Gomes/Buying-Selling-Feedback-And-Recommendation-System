@@ -15,7 +15,6 @@ export class ProductController {
     return this.productService.create(createProductDto);
   }
 
-  //@UseGuards(JwtAuthGuard)
   @Get()
   async findAll(): Promise<ProductResponseDto[]> {
     return this.productService.findAll();

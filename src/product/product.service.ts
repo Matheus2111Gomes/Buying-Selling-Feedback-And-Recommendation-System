@@ -14,7 +14,6 @@ export class ProductService {
   async create(createProductDto: CreateProductDto): Promise<Product> {
     const timeElapsed = Date.now();
     createProductDto.createdAt = new Date(timeElapsed);
-    console.log(createProductDto);
     const product = this.productRepository.create(createProductDto);
     return this.productRepository.save(product);
   }
