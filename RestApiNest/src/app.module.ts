@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { ProductModule } from './product/product.module';
 import { ConfigModule } from '@nestjs/config';
@@ -13,7 +12,6 @@ import { AppService } from './app.service';
       isGlobal: true,
     }),
     UserModule,
-    AuthModule,
     FeedbackModule,
     ProductModule,
   ],
