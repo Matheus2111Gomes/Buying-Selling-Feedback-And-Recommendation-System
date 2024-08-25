@@ -8,12 +8,12 @@ export class FeedbackController {
 
   @Post()
   create(@Body() createFeedbackDto: CreateFeedbackDto) {
-    return this.feedbackService.create(createFeedbackDto);
+    return this.feedbackService.createFeedback(createFeedbackDto);
   }
 
   @Get()
   findAll() {
-    return this.feedbackService.findAll();
+    return this.feedbackService.getAllFeedback();
   }
 
   // @Get(':id')
@@ -23,6 +23,6 @@ export class FeedbackController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.feedbackService.remove(+id);
+    return this.feedbackService.deleteFeedback(id);
   }
 }

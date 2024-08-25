@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { FeedbackService } from './feedback.service';
 import { FeedbackController } from './feedback.controller';
-import { Feedback } from './entities/feedback.entity';
+import { PrismaModule } from '../../prisma/prisma.module';
 @Module({
-  imports: [TypeOrmModule.forFeature([Feedback])],
+  imports: [PrismaModule],
   controllers: [FeedbackController],
   providers: [FeedbackService],
   exports: [FeedbackService],

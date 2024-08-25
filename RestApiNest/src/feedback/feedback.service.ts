@@ -1,30 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Feedback } from './feedback.entity';
-import { CreateFeedbackDto } from './dto/create-feedback.dto';
+import { PrismaService } from '../../prisma/prisma.service';
+import { Prisma, Feedback } from '@prisma/client';
 
 @Injectable()
 export class FeedbackService {
-  constructor(
-    @InjectRepository(Feedback)
-    private feedbackRepository: Repository<Feedback>,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  async create(createFeedbackDto: CreateFeedbackDto): Promise<Feedback> {
-    const feedback = this.feedbackRepository.create(createFeedbackDto);
-    return this.feedbackRepository.save(feedback);
+  async createFeedback(data: Prisma.FeedbackCreateInput): Promise<Feedback> {
+    return this.prisma.feedback.create({
+      data,
+    });
   }
 
-  async findAll(): Promise<Feedback[]> {
-    return this.feedbackRepository.find();
+  async getAllFeedback(): Promise<Feedback[]> {
+    return this.prisma.feedback.findMany();
   }
 
-  //  async findOne(id: number): Promise<Feedback> {
-  //   return this.feedbackRepository.findOne({ where: { id } });
-  // }
+  async getFeedbackById(id: string): Promise<Feedback | null> {
+    return this.prisma.feedback.findUnique({
+      where: { id },
+    });
+  }
 
-  async remove(id: number): Promise<void> {
-    await this.feedbackRepository.delete(id);
+  async updateFeedback(id: string, data: Prisma.FeedbackUpdateInput): Promise<Feedback> {
+    return this.prisma.feedback.update({
+      where: { id },
+      data,
+    });
+  }
+
+  async deleteFeedback(id: string): Promise<Feedback> {
+    return this.prisma.feedback.delete({
+      where: { id },
+    });
   }
 }
