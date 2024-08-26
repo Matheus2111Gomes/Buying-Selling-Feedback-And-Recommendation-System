@@ -1,6 +1,20 @@
 version: '3.8'
 
 services:
+  # Banco de Dados PostgreSQL
+  db:
+    image: postgres:13
+    restart: always
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: RFS_DB
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./Postgres/postgres_data:/var/lib/postgresql/data
+
   # Serviço da API
   api:
     build: ./RestApiNest
@@ -19,18 +33,7 @@ services:
 
 
 
-  # Banco de Dados PostgreSQL
-  db:
-    image: postgres:13
-    container_name: postgres_db
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: mydatabase
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+
 
   # Serviço do Nginx
   nginx:
