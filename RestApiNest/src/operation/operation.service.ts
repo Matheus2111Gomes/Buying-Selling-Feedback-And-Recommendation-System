@@ -1,26 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOperationDto } from './dto/create-operation.dto';
-import { UpdateOperationDto } from './dto/update-operation.dto';
+import { PrismaService } from '../../prisma/prisma.service';
+import { Prisma, Operation } from '@prisma/client';
 
 @Injectable()
 export class OperationService {
-  create(createOperationDto: CreateOperationDto) {
-    return 'This action adds a new operation';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async createOperation(data: Prisma.OperationCreateInput): Promise<Operation> {
+    return this.prisma.operation.create({
+      data,
+    });
   }
 
-  findAll() {
-    return `This action returns all operation`;
+  async getAllOperations(): Promise<Operation[]> {
+    return this.prisma.operation.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} operation`;
+  async getOperationById(id: string): Promise<Operation | null> {
+    return this.prisma.operation.findUnique({
+      where: { id },
+    });
   }
 
-  update(id: number, updateOperationDto: UpdateOperationDto) {
-    return `This action updates a #${id} operation`;
+  async updateOperation(id: string, data: Prisma.OperationUpdateInput): Promise<Operation> {
+    return this.prisma.operation.update({
+      where: { id },
+      data,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} operation`;
+  async deleteOperation(id: string): Promise<Operation> {
+    return this.prisma.operation.delete({
+      where: { id },
+    });
   }
 }

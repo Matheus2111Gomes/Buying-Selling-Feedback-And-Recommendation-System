@@ -27,8 +27,6 @@ model Feedback {
  // user      User     @relation(fields: [userId], references: [id])
 }
 
-
-
 model Product {
   id           String   @id @default(uuid())
   name         String
@@ -36,3 +34,9 @@ model Product {
   createdAt    DateTime @default(now())
 }
 
+model Operation {
+  id           String   @id @default(uuid())
+  type         Int
+  data         String
+  createdAt    DateTime @default(now())
+}

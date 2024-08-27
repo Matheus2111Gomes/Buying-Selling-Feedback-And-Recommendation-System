@@ -1,1 +1,4 @@
-export class CreateOperationDto {}
+export class CreateOperationDto{
+    type: number;
+    data: string;
+}
