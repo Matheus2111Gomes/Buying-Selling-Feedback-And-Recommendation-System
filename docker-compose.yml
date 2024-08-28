@@ -18,14 +18,14 @@ services:
   api:
     build: ./RestApiNest
     container_name: nest_api
-    ports:
-      - "3000:3000"
     environment:
       DATABASE_HOST: db
       DATABASE_PORT: 5432
       DATABASE_USER: postgres
       DATABASE_PASSWORD: postgres
       DATABASE_NAME: RFS_DB
+    expose:
+      - 3000
     depends_on:
       - db
     tty: true  

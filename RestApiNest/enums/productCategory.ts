@@ -1,0 +1,4 @@
+enum productCategory {
+    "Home",
+    "Room"
+}

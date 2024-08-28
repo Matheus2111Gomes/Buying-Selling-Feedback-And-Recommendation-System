@@ -1,0 +1,4 @@
+enum operationType {
+    "buy",
+    "sell"
+}
