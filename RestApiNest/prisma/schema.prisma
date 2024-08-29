@@ -13,8 +13,11 @@ model User {
   name      String
   email     String   @unique
   password  String
+  isSeller  Boolean
+  productsBuy String[]
+  balance   Float
   createdAt DateTime @default(now())
- // feedbacks Feedback[]
+  feedbacks Feedback[]
 }
 
 model Feedback {
@@ -24,13 +27,17 @@ model Feedback {
   rating    Int
   comment   String
   createdAt DateTime @default(now())
- // user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Product {
   id           String   @id @default(uuid())
   name         String
   description  String
+  category     Int
+  sellerId     String
+  howManyHas   Int
+  price        Float
   createdAt    DateTime @default(now())
 }
 
