@@ -1,5 +1,5 @@
 services:
-  # Banco de Dados PostgreSQL
+  # PostgreSQL Services
   db:
     image: postgres:13
     restart: always
@@ -13,8 +13,7 @@ services:
     volumes:
       - ./Postgres/postgres_data:/var/lib/postgresql/data
 
-
-  # Serviço da API
+  # API Services
   api:
     build: ./RestApiNest
     container_name: nest_api
@@ -30,11 +29,7 @@ services:
       - db
     tty: true  
 
-
-
-
-
-  # Serviço do Nginx
+  # Nginx Services
   nginx:
     build: ./nginx
     container_name: nginx_proxy
@@ -43,5 +38,40 @@ services:
     depends_on:
       - api
 
+  # Queue Services
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - ./kafka-data:/var/lib/kafka/data
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+    depends_on:
+      - kafka
+
 volumes:
   postgres_data:
+  kafka-data:

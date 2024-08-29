@@ -1,5 +1,10 @@
 FROM nginx:alpine
 
+RUN apk add --no-cache \
+    build-base \
+    git \
+    curl 
+    
 COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
