@@ -30,10 +30,10 @@ __consumer_offsets 15 0
 __consumer_offsets 48 0
 __consumer_offsets 11 0
 __consumer_offsets 44 0
-feedback.stored 0 4
+feedback.stored 0 3
 __consumer_offsets 23 0
 __consumer_offsets 19 0
-__consumer_offsets 32 1
+__consumer_offsets 32 0
 __consumer_offsets 28 0
 __consumer_offsets 7 0
 __consumer_offsets 40 0
